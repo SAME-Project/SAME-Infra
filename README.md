@@ -4,6 +4,9 @@
 
 I found some basic guides around how to do K3S + Terraform. These can be the basis for a basic 5 part setup.
 
+**Launching a Terraform AKS cluster**  
+https://build5nines.com/terraform-create-an-aks-cluster/
+
 **Launching a Terraform AWS + K3S Cluster**   
 https://github.com/rancher/terraform-k3s-aws-cluster
 
