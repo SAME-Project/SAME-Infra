@@ -46,16 +46,18 @@ Seamlessly transport AI training from edge device to cloud as needed
 However setup of platforms on top of the k8s API is another project’s scope.
 
 # Project Roadmap
-Define and document project scope & deliverables, key personnel and objectives 
-Set up and refine a shared GitHub repo (project will be separate from Kubeflow)
-Create Terraform configurations to support basic launch configurations:
-P0:
+- Define and document project scope & deliverables, key personnel and objectives 
+- Set up and refine a shared GitHub repo (project will be separate from Kubeflow)
+- Create Terraform configurations to support basic launch configurations:
+
+>> P0:
 K3S Local
 K3S (VM)
-P1 - extend the same code to support standardized deployments of 
-AKS (Azure) 
-GKS (GCP) 
-EKS (AWS) 
+
+>> P1 - extend the same code to support standardized deployments of 
+- AKS (Azure) 
+- GKS (GCP) 
+- EKS (AWS) 
 
 # Near Term Gaps (The purpose of this document)
 - Collection of terraform (one per provider) scripts for setting up:
@@ -107,19 +109,26 @@ By supporting k3s as easily as hosted k8s, we make swapping out from k3s to k8s 
 By separating the terraform installation of a Kubernetes API from the kubeflow installation, it enables us to move to multi cloud Reproducibility much easier.
 
 # UX:
-$ export K8S_PROVIDER=local-k3s
-$ terraform plan; terraform apply
-$ porter build Kubeflow; porter install # Kubeflow installed on laptop
 
+# Kubeflow installed on laptop 
+```
+$ export K8S_PROVIDER=local-k3s 
+$ terraform plan; terraform apply 
+$ porter build Kubeflow; porter install 
+```
+# Kubeflow installed on k3s VM
+```
 $ export K8S_PROVIDER=vm-k3s
 $ export K8S_PROVIDER_ADDRESS=vm7382.contoso.com
 $ terraform plan; terraform apply
-$ porter build Kubeflow; porter install # Kubeflow installed on k3s VM
-
+$ porter build Kubeflow; porter install 
+```
+# Kubeflow installed on AKS cluster
+```
 $ export K8S_PROVIDER=aks
 $ terraform plan; terraform apply
-$ porter build Kubeflow; porter install # Kubeflow installed on AKS cluster
-
+$ porter build Kubeflow; porter install 
+```
 
 
 
