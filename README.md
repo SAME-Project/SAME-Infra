@@ -55,54 +55,52 @@ GKS (GCP)
 EKS (AWS) 
 
 # Near Term Gaps (The purpose of this document)
-Collection of terraform (one per provider) scripts for setting up:
-A VM on the target clouds 
-K3s on those VMs
-Doing both in such a way that maximizes shared code and parameterization via environment settings
-Testing using the Porter CNAB to deploy KF to those deployments (proof of concept from Bernd Verst and Ralph Squillace (porter install -c kubeflow --tag ghcr.io/squillace/aks-kubeflow:v0.3.1 --param AZURE_RESOURCE_GROUP=winlin --param CLUSTER_NAME=kubeflow`)
-
+- Collection of terraform (one per provider) scripts for setting up:
+- A VM on the target clouds 
+- K3s on those VMs
+- Doing both in such a way that maximizes shared code and parameterization via environment settings
+- Testing using the Porter CNAB to deploy KF to those deployments (proof of concept from Bernd Verst and Ralph Squillace (porter install -c kubeflow --tag ghcr.io/squillace/aks-kubeflow:v0.3.1 --param AZURE_RESOURCE_GROUP=winlin --param CLUSTER_NAME=kubeflow`)
 
 # Nice to have: 
-Common pattern for TF scripts for setting up K8s on the hosted provider
+- Common pattern for TF scripts for setting up K8s on the hosted provider
  (these exist but are often in very different formats/styles)
-if we could fork and centralize and share code (with a similar pattern as the k3s work), that would be hugely valuable.
+- if we could fork and centralize and share code (with a similar pattern as the k3s work), that would be hugely valuable.
 
 # Target Cloud & Owners
-Google Cloud Platform - Gabe Weiss 
-Amazon Web Services - Jeremy Wallace (?)
-Microsoft Azure - Paul DeCarlo
-Nuno De Carmo (https://twitter.com/nunixtech)
-Ralph Squillace  (https://twitter.com/ralph_squillace) 
-Others? Ping Suse/Rancher
-NVIDIA - Rex St. John
+- Google Cloud Platform - Gabe Weiss 
+- Amazon Web Services - Jeremy Wallace (?)
+- Microsoft Azure - Paul DeCarlo
+- Nuno De Carmo (https://twitter.com/nunixtech)
+- Ralph Squillace  (https://twitter.com/ralph_squillace) 
+- Others? Ping Suse/Rancher
+- NVIDIA - Rex St. John
 
 # Supported Environments
-K3S Local
-K3S (VM)
-AKS (Azure)
-GKS (GCP)
-EKS (AWS)
+- K3S Local
+- K3S (VM)
+- AKS (Azure)
+- GKS (GCP)
+- EKS (AWS)
 
 # Need Help With…
-K3s setup via TF
-VM setup via TF
-What do we need to do about additional resources - nothing?
+- K3s setup via TF
+- VM setup via TF
+- What do we need to do about additional resources - nothing?
 ...
 
 # Link: 
-https://github.com/kubernauts/bonsai
-https://twitter.com/ralph_squillace/status/1360646969258090499
+- https://github.com/kubernauts/bonsai
+- https://twitter.com/ralph_squillace/status/1360646969258090499
 
 # Job to be done:
 I am a data scientist who may or may not have access to provision a full cluster. I want to set up Kubeflow in a reliable way and so to get there, I’m either going to declaratively set up a hosted K8s cluster on the provider of my choice or set up a k3s “cluster) on a single beefy VM or my laptop - this consistently provided k8s API will let me deploy Kubeflow (OUT OF SCOPE FOR THIS WORK) and get going in a production ready way quickly without understanding any of the details for Kubeflow or k8s
 
 # Our theory -
-Make it easy to get yourself a Kubernetes API (cluster is fine, k3s works too)
-Then install Kubeflow to that
-Then party on ML
+- Make it easy to run Kubernetes (K3S preferred or K8s) on 5+ infrastructure platforms via Terraform
+- Then install KubeFlow to that
+- Then party on ML (as a Data Scientist who doesn't want to do setting up all the things)
 
 By supporting k3s as easily as hosted k8s, we make swapping out from k3s to k8s a single environment setting.
-
 By separating the terraform installation of a Kubernetes API from the kubeflow installation, it enables us to move to multi cloud Reproducibility much easier.
 
 # UX:
