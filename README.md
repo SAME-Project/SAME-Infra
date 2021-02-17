@@ -4,6 +4,9 @@
 
 I found some basic guides around how to do K3S + Terraform. These can be the basis for a basic 5 part setup.
 
+Setting up a vSphere VM using K3S + Terraform
+https://www.virtualthoughts.co.uk/2020/08/14/automated-deployment-of-k3s-and-rancher-on-vsphere-with-terraform/
+
 Pre-created / existing GitHub library for using Terraform to spin up K3S on various clusters
 https://github.com/xunleii/terraform-module-k3s
 
