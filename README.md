@@ -4,16 +4,25 @@
 
 I found some basic guides around how to do K3S + Terraform. These can be the basis for a basic 5 part setup.
 
-**Setting up a vSphere VM using K3S + Terraform**
+**Launching a Terraform AWS + K3S Cluster**   
+https://github.com/rancher/terraform-k3s-aws-cluster
+
+**Terraform module for GKE**  
+https://github.com/spotify/terraform-gke-kubeflow-cluster
+
+**Installing KubeFlow via Terraform**  
+https://github.com/datarootsio/terraform-module-kubeflow
+
+**Setting up a vSphere VM using K3S + Terraform**  
 https://www.virtualthoughts.co.uk/2020/08/14/automated-deployment-of-k3s-and-rancher-on-vsphere-with-terraform/
 
-**Pre-created / existing GitHub library for using Terraform to spin up K3S on various clusters**
+**Pre-created / existing GitHub library for using Terraform to spin up K3S on various clusters**  
 https://github.com/xunleii/terraform-module-k3s
 
-**Simple, 2-Node K3S Cluster on Terraform (Supports Arm), slightly out of date**
+**Simple, 2-Node K3S Cluster on Terraform (Supports Arm), slightly out of date**  
 https://github.com/wjimenez5271/k3s-terraform
 
-**Tutorial by Alex Ellis on how to run K3S via Terraform using Equinix Metal (Baremetal)**
+**Tutorial by Alex Ellis on how to run K3S via Terraform using Equinix Metal (Baremetal)**  
 https://blog.alexellis.io/bare-metal-kubernetes-with-k3s/
 
 # Transportable K3S AI
@@ -26,7 +35,7 @@ Fortunately, Terraform (a technology to enable simplification of developer infra
 
 ## Ultimate Vision
 
-** “With a single command, a Data Scientist can set up, provision and run a reproducible, reusable ML development environment.” **
+**“With a single command, a Data Scientist can set up, provision and run a reproducible, reusable ML development environment.”**
 
 ## Basic Design Considerations
 Terraform will be used to enable IaaS on all target environments (cloud, local)
@@ -50,11 +59,11 @@ However setup of platforms on top of the k8s API is another project’s scope.
 - Set up and refine a shared GitHub repo (project will be separate from Kubeflow)
 - Create Terraform configurations to support basic launch configurations:
 
-** P0:**
+**P0:**
 K3S Local
 K3S (VM)
 
-** P1 - extend the same code to support standardized deployments of ** 
+**P1 - extend the same code to support standardized deployments of..** 
 - AKS (Azure) 
 - GKS (GCP) 
 - EKS (AWS) 
