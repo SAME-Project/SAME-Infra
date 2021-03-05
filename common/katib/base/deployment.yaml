@@ -1,0 +1,687 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: katib-controller
+  namespace: kubeflow
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: katib-ui
+  namespace: kubeflow
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: katib-controller
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - serviceaccounts
+  - services
+  - secrets
+  - events
+  - namespaces
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/log
+  - pods/status
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - '*'
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  - cronjobs
+  verbs:
+  - '*'
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - get
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - validatingwebhookconfigurations
+  - mutatingwebhookconfigurations
+  verbs:
+  - '*'
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - experiments/status
+  - experiments/finalizers
+  - trials
+  - trials/status
+  - trials/finalizers
+  - suggestions
+  - suggestions/status
+  - suggestions/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - tfjobs
+  - pytorchjobs
+  verbs:
+  - '*'
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: katib-ui
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - namespaces
+  verbs:
+  - '*'
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - trials
+  - suggestions
+  verbs:
+  - '*'
+---
+aggregationRule:
+  clusterRoleSelectors:
+  - matchLabels:
+      rbac.authorization.kubeflow.org/aggregate-to-kubeflow-katib-admin: "true"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin: "true"
+  name: kubeflow-katib-admin
+rules: []
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit: "true"
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-katib-admin: "true"
+  name: kubeflow-katib-edit
+rules:
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - trials
+  - suggestions
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.kubeflow.org/aggregate-to-kubeflow-view: "true"
+  name: kubeflow-katib-view
+rules:
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - experiments
+  - trials
+  - suggestions
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: katib-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: katib-controller
+subjects:
+- kind: ServiceAccount
+  name: katib-controller
+  namespace: kubeflow
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: katib-ui
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: katib-ui
+subjects:
+- kind: ServiceAccount
+  name: katib-ui
+  namespace: kubeflow
+---
+apiVersion: v1
+data:
+  metrics-collector-sidecar: |-
+    {
+      "StdOut": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/file-metrics-collector"
+      },
+      "File": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/file-metrics-collector"
+      },
+      "TensorFlowEvent": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/tfevent-metrics-collector",
+        "resources": {
+          "limits": {
+            "memory": "1Gi"
+          }
+        }
+      }
+    }
+  suggestion: |-
+    {
+      "random": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-hyperopt"
+      },
+      "grid": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-chocolate"
+      },
+      "hyperband": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-hyperband"
+      },
+      "bayesianoptimization": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-skopt"
+      },
+      "tpe": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-hyperopt"
+      },
+      "enas": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-enas",
+        "imagePullPolicy": "Always",
+        "resources": {
+          "limits": {
+            "memory": "200Mi"
+          }
+        }
+      },
+      "cmaes": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-goptuna"
+      },
+      "darts": {
+        "image": "gcr.io/kubeflow-images-public/katib/v1beta1/suggestion-darts"
+      }
+    }
+kind: ConfigMap
+metadata:
+  name: katib-config
+  namespace: kubeflow
+---
+apiVersion: v1
+data:
+  clusterDomain: cluster.local
+kind: ConfigMap
+metadata:
+  name: katib-parameters
+  namespace: kubeflow
+---
+apiVersion: v1
+data:
+  defaultTrialTemplate.yaml: |-
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: {{.Trial}}
+      namespace: {{.NameSpace}}
+    spec:
+      template:
+        spec:
+          containers:
+          - name: {{.Trial}}
+            image: docker.io/kubeflowkatib/mxnet-mnist
+            command:
+            - "python3"
+            - "/opt/mxnet-mnist/mnist.py"
+            - "--batch-size=64"
+            {{- with .HyperParameters}}
+            {{- range .}}
+            - "{{.Name}}={{.Value}}"
+            {{- end}}
+            {{- end}}
+          restartPolicy: Never
+kind: ConfigMap
+metadata:
+  name: trial-template
+  namespace: kubeflow
+---
+apiVersion: v1
+data:
+  defaultTrialTemplate.yaml: |-
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: {{.Trial}}
+      namespace: {{.NameSpace}}
+    spec:
+      template:
+        spec:
+          containers:
+          - name: {{.Trial}}
+            image: docker.io/kubeflowkatib/mxnet-mnist
+            command:
+            - "python3"
+            - "/opt/mxnet-mnist/mnist.py"
+            - "--batch-size=64"
+            {{- with .HyperParameters}}
+            {{- range .}}
+            - "{{.Name}}={{.Value}}"
+            {{- end}}
+            {{- end}}
+          restartPolicy: Never
+  enasCPUTemplate: |-
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: {{.Trial}}
+      namespace: {{.NameSpace}}
+    spec:
+      template:
+        spec:
+          containers:
+          - name: {{.Trial}}
+            image: docker.io/kubeflowkatib/enas-cnn-cifar10-cpu
+            command:
+            - "python3.5"
+            - "-u"
+            - "RunTrial.py"
+            {{- with .HyperParameters}}
+            {{- range .}}
+            - "--{{.Name}}=\"{{.Value}}\""
+            {{- end}}
+            {{- end}}
+            - "--num_epochs=1"
+          restartPolicy: Never
+  pytorchJobTemplate: |-
+    apiVersion: "kubeflow.org/v1"
+    kind: PyTorchJob
+    metadata:
+      name: {{.Trial}}
+      namespace: {{.NameSpace}}
+    spec:
+     pytorchReplicaSpecs:
+      Master:
+        replicas: 1
+        restartPolicy: OnFailure
+        template:
+          spec:
+            containers:
+              - name: pytorch
+                image: gcr.io/kubeflow-ci/pytorch-dist-mnist-test:v1.0
+                imagePullPolicy: Always
+                command:
+                  - "python"
+                  - "/var/mnist.py"
+                  {{- with .HyperParameters}}
+                  {{- range .}}
+                  - "{{.Name}}={{.Value}}"
+                  {{- end}}
+                  {{- end}}
+      Worker:
+        replicas: 2
+        restartPolicy: OnFailure
+        template:
+          spec:
+            containers:
+              - name: pytorch
+                image: gcr.io/kubeflow-ci/pytorch-dist-mnist-test:v1.0
+                imagePullPolicy: Always
+                command:
+                  - "python"
+                  - "/var/mnist.py"
+                  {{- with .HyperParameters}}
+                  {{- range .}}
+                  - "{{.Name}}={{.Value}}"
+                  {{- end}}
+                  {{- end}}
+kind: ConfigMap
+metadata:
+  labels:
+    app: katib-trial-templates
+  name: trial-template-labeled
+  namespace: kubeflow
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: katib-controller
+  namespace: kubeflow
+---
+apiVersion: v1
+data:
+  MYSQL_ROOT_PASSWORD: dGVzdA==
+kind: Secret
+metadata:
+  name: katib-mysql-secrets
+  namespace: kubeflow
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/port: "8080"
+    prometheus.io/scheme: http
+    prometheus.io/scrape: "true"
+  name: katib-controller
+  namespace: kubeflow
+spec:
+  ports:
+  - name: webhook
+    port: 443
+    protocol: TCP
+    targetPort: 8443
+  - name: metrics
+    port: 8080
+    targetPort: 8080
+  selector:
+    app: katib-controller
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: katib
+    component: db-manager
+  name: katib-db-manager
+  namespace: kubeflow
+spec:
+  ports:
+  - name: api
+    port: 6789
+    protocol: TCP
+  selector:
+    app: katib
+    component: db-manager
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: katib
+    component: mysql
+  name: katib-mysql
+  namespace: kubeflow
+spec:
+  ports:
+  - name: dbapi
+    port: 3306
+    protocol: TCP
+  selector:
+    app: katib
+    component: mysql
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: katib
+    component: ui
+  name: katib-ui
+  namespace: kubeflow
+spec:
+  ports:
+  - name: ui
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: katib
+    component: ui
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: katib-mysql
+  namespace: kubeflow
+  labels:
+    app: katib
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: katib-controller
+  name: katib-controller
+  namespace: kubeflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katib-controller
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: katib-controller
+    spec:
+      containers:
+      - args:
+        - --webhook-port=8443
+        command:
+        - ./katib-controller
+        env:
+        - name: KATIB_CORE_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: gcr.io/kubeflow-images-public/katib/v1beta1/katib-controller
+        imagePullPolicy: IfNotPresent
+        name: katib-controller
+        ports:
+        - containerPort: 8443
+          name: webhook
+          protocol: TCP
+        - containerPort: 8080
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /tmp/cert
+          name: cert
+          readOnly: true
+      serviceAccountName: katib-controller
+      volumes:
+      - name: cert
+        secret:
+          defaultMode: 420
+          secretName: katib-controller
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: katib
+    component: db-manager
+  name: katib-db-manager
+  namespace: kubeflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katib
+      component: db-manager
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: katib
+        component: db-manager
+      name: katib-db-manager
+    spec:
+      containers:
+      - command:
+        - ./katib-db-manager
+        env:
+        - name: DB_NAME
+          value: mysql
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: katib-mysql-secrets
+        image: gcr.io/kubeflow-images-public/katib/v1beta1/katib-db-manager
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /bin/grpc_health_probe
+            - -addr=:6789
+          failureThreshold: 5
+          initialDelaySeconds: 10
+          periodSeconds: 60
+        name: katib-db-manager
+        ports:
+        - containerPort: 6789
+          name: api
+        readinessProbe:
+          exec:
+            command:
+            - /bin/grpc_health_probe
+            - -addr=:6789
+          initialDelaySeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: katib
+    component: mysql
+  name: katib-mysql
+  namespace: kubeflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katib
+      component: mysql
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: katib
+        component: mysql
+      name: katib-mysql
+    spec:
+      containers:
+      - args:
+        - --datadir
+        - /var/lib/mysql/datadir
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: katib-mysql-secrets
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "false"
+        - name: MYSQL_DATABASE
+          value: katib
+        image: mysql:8
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}
+          initialDelaySeconds: 40
+          periodSeconds: 20
+          timeoutSeconds: 10
+        name: katib-mysql
+        ports:
+        - containerPort: 3306
+          name: dbapi
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: katib-mysql
+      volumes:
+      - name: katib-mysql
+        persistentVolumeClaim:
+          claimName: katib-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: katib
+    component: ui
+  name: katib-ui
+  namespace: kubeflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katib
+      component: ui
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: katib
+        component: ui
+      name: katib-ui
+    spec:
+      containers:
+      - args:
+        - --port=8080
+        command:
+        - ./katib-ui
+        env:
+        - name: KATIB_CORE_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: gcr.io/kubeflow-images-public/katib/v1beta1/katib-ui
+        imagePullPolicy: IfNotPresent
+        name: katib-ui
+        ports:
+        - containerPort: 8080
+          name: ui
+      serviceAccountName: katib-ui

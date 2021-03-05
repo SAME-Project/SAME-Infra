@@ -1,0 +1,16 @@
+plugin-name: kubeflow-pipelines
+plugin-description: Kubeflow Pipelines platform agnostic 
+namespace: "kubeflow"
+yaml:
+  - url: "github.com/kubeflow/pipelines/manifests/kustomize/cluster-scoped-resources?ref=1.3.0"
+    type: "kustomize"
+
+  - url: "github.com/kubeflow/pipelines/manifests/kustomize/env/platform-agnostic-pns?ref=1.3.0"
+    type: "kustomize"
+
+
+
+    
+    
+    
+    

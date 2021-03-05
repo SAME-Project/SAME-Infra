@@ -1,0 +1,14 @@
+plugin-type: group
+group-name: kf-pipelines-tekton-traefik
+group-description: Expose Kubeflow pipelines with Tekton backend using traefik HTTP
+plugins:
+  - name: tekton
+    enabled: true
+  - name: kf-pipelines-tekton
+    enabled: true
+inline-plugins:
+  - plugin-name: kubeflow-bind-traefik
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/traefik/kubeflow-pipeline-bind.yaml"
+    post-install:
+      command:  "echo \"kubectl patch svc ml-pipeline-ui -n kubeflow -p '{\"spec\": {\"type\": \"LoadBalancer\"}}'\""

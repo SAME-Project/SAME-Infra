@@ -1,0 +1,12 @@
+plugin-name: h2o-single
+plugin-description: H2O.ai
+namespace: "h2o"
+yaml:
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/h2o/base/namespace-0.yaml"
+    type: "file"
+
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/h2o/base/service.yaml"
+    type: "file"
+
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/h2o/single/deployment.yaml"
+    type: "file"

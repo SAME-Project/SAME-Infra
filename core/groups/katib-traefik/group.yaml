@@ -1,0 +1,16 @@
+plugin-type: group
+group-name: katib-traefik
+group-description: Expose Katib using traefik HTTP
+plugins:
+  - name: pytorch-op
+    enabled: true
+  - name: tensorflow-op
+    enabled: true
+  - name: katib
+    enabled: true
+inline-plugins:
+  - plugin-name: katib-bind-traefik
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/traefik/katib-traefik-bind.yaml"
+    post-install:
+      command: "echo \"KATIB URL: http://\"  $(kubectl get service/traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}' -n kube-system) \"/katib\""

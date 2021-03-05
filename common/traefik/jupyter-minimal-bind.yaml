@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: IngressClass
+metadata:
+  name: traefik-lb
+spec: 
+   controller: traefik.io/ingress-controller
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: "Ingress"
+metadata:
+  name: "jupyter-minimal-ingress"
+  namespace: jupyter
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2  
+spec:
+  ingressClassName: "traefik-lb"
+  rules:
+    - http:
+        paths:
+        - path: "/"
+          backend:
+            serviceName: "jupyter-minimal"
+            servicePort: 8888

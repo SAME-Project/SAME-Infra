@@ -1,0 +1,6 @@
+plugin-name: jupyter-minimal
+plugin-description: Minimal Jupyter Configuration
+namespace: "jupyter"
+yaml:
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/jupyter/base/deployment.yaml"
+    type: "file"  

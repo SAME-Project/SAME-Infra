@@ -1,0 +1,9 @@
+plugin-type: group
+group-name: rabbitmq-three
+plugins:
+  - name: rabbitmq
+    enabled: true
+inline-plugins:
+  - plugin-name: Three-nodes
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/rabbitmq/rabbitmq-tree-nodes.yaml"

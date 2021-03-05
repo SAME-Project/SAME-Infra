@@ -1,0 +1,17 @@
+name: Cache-Core
+type: groups
+items:
+  - name: argo-workflow-traefik                
+    description: Expose Argo Workflow using traefik HTTP 
+  - name: jupyter-minimal-traefik 
+    description: Expose Jupyter Notebooks using traefik HTTP
+  - name: katib-traefik 
+    description: Expose Katib using traefik HTTP   
+  - name: kf-pipelines-tekton-traefik 
+    description: Expose Kubeflow pipelines with Tekton backend using traefik HTTP 
+  - name: kubeflow-pipelines-traefik
+    description:  Expose Kubeflow Workflow using traefik HTTP 
+  - name: pytorch-op-traefik
+    description: Expose Pytorch using traefik HTTP
+  - name: tensorflow-op-traefik
+    description: Expose Tensorflow using traefik HTTP

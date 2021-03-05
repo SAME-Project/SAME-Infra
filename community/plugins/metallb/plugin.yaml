@@ -1,0 +1,6 @@
+plugin-name: Metallb
+namespace: metallb-system
+yaml:
+  - url: "https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/metallb.yaml"
+post-install:
+  command: "kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey=\"$(openssl rand -base64 128)\""

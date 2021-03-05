@@ -1,0 +1,25 @@
+name: Cache-Core
+type: plugins
+items:
+ - name: argo-workflow                  
+   description: Argo Workflow plugin
+ - name: h2o-single                      
+   description: H2O.ai
+ - name: jupyter-minimal                      
+   description:  Minimal Jupyter Configuration 
+ - name: katib                     
+   description: Kubeflow Katib 
+ - name: kf-pipelines-tekton                     
+   description: Kubeflow Pipelines based on Tekton 
+ - name: kubeflow-pipelines                      
+   description: Kubeflow Pipelines platform agnostic
+ - name: mpi-op                       
+   description: MPI-Operator 
+ - name: nvidia-gpu                     
+   description: Nvidia GPU support
+ - name: pytorch-op                       
+   description:  Pytorch op
+ - name: tekton                       
+   description: Kubeflow Pipelines based on Tekton
+ - name: tensorflow-op                       
+   description: Kubeflow Tensorflow

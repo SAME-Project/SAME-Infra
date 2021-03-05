@@ -1,0 +1,6 @@
+plugin-name: kf-pipelines-tekton
+plugin-description: Kubeflow Pipelines based on Tekton 
+namespace: "kubeflow"
+yaml:
+  - url: "https://raw.githubusercontent.com/kubeflow/kfp-tekton/master/install/v0.4.0/kfp-tekton.yaml"
+    type: "file"

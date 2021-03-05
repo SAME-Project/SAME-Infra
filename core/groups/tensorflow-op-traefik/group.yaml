@@ -1,0 +1,10 @@
+plugin-type: group
+group-name: tensorflow-op-traefik
+group-description: Expose Tensorflow using traefik HTTP
+plugins:
+  - name: tensorflow-op
+    enabled: true
+inline-plugins:
+  - plugin-name: tensorflow-op-bind-traefik
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/traefik/tensorflow-op-bind.yaml"
