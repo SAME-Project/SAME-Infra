@@ -1,0 +1,8 @@
+plugin-type: group
+group-name: test
+group-description: "This is a CI test"
+plugins:
+  - name: argo
+    enabled: true
+
+

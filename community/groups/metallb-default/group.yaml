@@ -1,0 +1,10 @@
+plugin-type: group
+group-name: metallb-default
+group-description: Metallb with default ports
+plugins:
+  - name: metallb 
+    enabled: true
+inline-plugins:
+  - plugin-name: default-port
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/metallb/metallb-default-ports.yaml"

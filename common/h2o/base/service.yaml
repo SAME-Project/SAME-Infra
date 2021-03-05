@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: h2o-service
+  name: h2o-service
+  namespace: h2o
+spec:
+  ports:
+  - name: http
+    port: 54321
+    targetPort: 54321
+  selector:
+    app: h2o-k8s
+  type: LoadBalancer

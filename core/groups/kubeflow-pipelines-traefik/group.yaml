@@ -1,0 +1,10 @@
+plugin-type: group
+group-name: kubeflow-pipelines-traefik
+group-description: Expose Kubeflow Workflow using traefik HTTP
+plugins:
+  - name: kubeflow-pipelines
+    enabled: true
+inline-plugins:
+  - plugin-name: kubeflow-bind-traefik
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/traefik/kubeflow-pipeline-bind.yaml"

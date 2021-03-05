@@ -1,0 +1,16 @@
+plugin-name: katib
+plugin-description: Kubeflow Katib 
+
+namespace: "kubeflow"
+yaml:
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/katib/base/namespace-0.yaml"
+    type: "file"
+
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/katib/base/crd.yaml"
+    type: "file"
+
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/katib/base/deployment.yaml"
+    type: "file"
+  
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/katib/base/pv.yaml"
+    type: "file"

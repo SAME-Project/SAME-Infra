@@ -1,0 +1,10 @@
+plugin-name: tekton
+plugin-description: Kubeflow Pipelines based on Tekton 
+namespace: "tekton-pipelines"
+yaml:
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/tekton/namespace-0.yaml"
+    type: "file"
+
+  - url: "https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.16.3/release.yaml"
+    type: "file"
+

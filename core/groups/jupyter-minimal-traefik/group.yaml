@@ -1,0 +1,13 @@
+plugin-type: group
+group-name: jupyter-minimal-traefik
+group-description: Expose Jupyter Notebooks using traefik HTTP
+plugins:
+  - name: jupyter-minimal
+    enabled: true
+inline-plugins:
+  - plugin-name: jupyter-minimal-traefik
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/traefik/jupyter-minimal-bind.yaml"
+    post-install:
+      command:  "echo \"$(kubectl exec -n jupyter $(kubectl get pod -n jupyter -l app=jupyter-srv -o name) -- pip install kfp)\" && clear && echo \"Jupyter URL: http://$(kubectl get service/traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}' -n kube-system):8888\""
+

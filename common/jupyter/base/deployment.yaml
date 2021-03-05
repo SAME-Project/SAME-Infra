@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-minimal
+  namespace: jupyter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter-srv
+  template:
+    metadata:
+      labels:
+        app: jupyter-srv
+    spec:
+      containers:
+      - name: jupyter-minimal
+        image: jupyter/minimal-notebook
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8888
+          name: jupyter
+        command: ["start-notebook.sh"]
+        args: ["--NotebookApp.token=''"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter-minimal-service
+  namespace: jupyter
+spec:
+  selector:
+    app: jupyter-srv
+  ports:
+    - name: jupyter
+      port: 8888
+      targetPort: 8888
+  type: LoadBalancer

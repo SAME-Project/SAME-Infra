@@ -1,0 +1,10 @@
+plugin-name: pytorch-op
+plugin-description: Pytorch op
+
+namespace: "kubeflow"
+yaml:
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/pytorch/base/crd.yaml"
+    type: "file"
+
+  - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/pytorch/base/deployment.yaml"
+    type: "file"

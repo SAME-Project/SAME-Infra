@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: h2o-stateful-set
+  namespace: h2o
+spec:
+  serviceName: h2o-service
+  podManagementPolicy: "Parallel"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: h2o-k8s
+  template:
+    metadata:
+      labels:
+        app: h2o-k8s
+    spec:
+      containers:
+        - name: h2o-k8s
+          image: 'h2oai/h2o-open-source-k8s'
+          resources:
+            requests:
+              memory: "4Gi"
+          ports:
+            - containerPort: 54321
+              protocol: TCP
+          env:
+          - name: H2O_KUBERNETES_SERVICE_DNS
+            value: h2o-service.h2o.svc.cluster.local
+          - name: H2O_NODE_LOOKUP_TIMEOUT
+            value: '5'

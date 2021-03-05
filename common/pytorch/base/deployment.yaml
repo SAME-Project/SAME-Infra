@@ -1,0 +1,112 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubeflow
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: pytorch-operator
+  name: pytorch-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: pytorch-operator
+subjects:
+- kind: ServiceAccount
+  name: pytorch-operator
+  namespace: kubeflow
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: pytorch-operator
+  name: pytorch-operator
+rules:
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - pytorchjobs
+  - pytorchjobs/status
+  - pytorchjobs/finalizers
+  verbs:
+  - '*'
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - '*'
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - services
+  - endpoints
+  - events
+  verbs:
+  - '*'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pytorch-operator
+  namespace: kubeflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: pytorch-operator
+  template:
+    metadata:
+      labels:
+        name: pytorch-operator
+    spec:
+      containers:
+      - command:
+        - /pytorch-operator.v1
+        - --alsologtostderr
+        - -v=1
+        - --monitoring-port=8443
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        image: gcr.io/kubeflow-images-public/pytorch-operator
+        name: pytorch-operator
+      serviceAccountName: pytorch-operator
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: pytorch-operator
+  name: pytorch-operator
+  namespace: kubeflow
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8443"
+    prometheus.io/scrape: "true"
+  labels:
+    app: pytorch-operator
+  name: pytorch-operator
+  namespace: kubeflow
+spec:
+  ports:
+  - name: monitoring-port
+    port: 8443
+    targetPort: 8443
+  selector:
+    name: pytorch-operator
+  type: ClusterIP

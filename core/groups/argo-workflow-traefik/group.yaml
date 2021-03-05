@@ -1,0 +1,12 @@
+plugin-type: group
+group-name: argo-workflow-traefik
+group-description: Expose Argo Workflow using traefik HTTP
+plugins:
+  - name: argo-workflow
+    enabled: true
+inline-plugins:
+  - plugin-name: Argo-bind-traefik
+    yaml:
+      - url: "https://raw.githubusercontent.com/kf5i/k3ai-plugins/main/common/traefik/argo-workflow-bind.yaml"
+    post-install:
+      command: "echo \"ARGO URL: http://\"  $(kubectl get service/traefik -o jsonpath='{.status.loadBalancer.ingress[0].ip}' -n kube-system)"
