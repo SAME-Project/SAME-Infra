@@ -84,9 +84,9 @@ K3S (VM)
 - if we could fork and centralize and share code (with a similar pattern as the k3s work), that would be hugely valuable.
 
 ## Target Local,Cloud & Owners
-- Google Cloud Platform - Gabe Weiss 
-- Amazon Web Services - Jeremy Wallace (?)
-- Microsoft Azure - Paul DeCarlo
+- Google Cloud Platform - 
+- Amazon Web Services - 
+- Microsoft Azure - 
 - Nuno De Carmo (https://twitter.com/nunixtech)
 - Ralph Squillace  (https://twitter.com/ralph_squillace) 
 - Alessandro Festa (https://twitter.com/bringyourownai)
